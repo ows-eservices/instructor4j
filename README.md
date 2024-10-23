@@ -1,10 +1,10 @@
 # Instructor4j: Ensure Structured Output from LLMs with Retries and Adaptive Prompting
 
-<a href="https://github.com/ows-eservices/instructor4j/stargazers"><img src="https://img.shields.io/github/stars/ows-eservices/instructor4j" alt="Stars Badge"/></a>
-<a href="https://github.com/ows-eservices/instructor4j/network/members"><img src="https://img.shields.io/github/forks/ows-eservices/instructor4j" alt="Forks Badge"/></a>
-<a href="https://github.com/ows-eservices/instructor4j/pulls"><img src="https://img.shields.io/github/issues-pr/ows-eservices/instructor4j" alt="Pull Requests Badge"/></a>
-<a href="https://github.com/ows-eservices/instructor4j/issues"><img src="https://img.shields.io/github/issues/ows-eservices/instructor4j" alt="Issues Badge"/></a>
-<a href="https://github.com/ows-eservices/instructor4j/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/ows-eservices/instructor4j?color=2b9348"></a>
+<a href="https://github.com/ows-eservices/instructor4j/stargazers"><img src="https://img.shields.io/github/stars/ows-eservices/instructor4j?cacheSeconds=120" alt="Stars Badge"/></a>
+<a href="https://github.com/ows-eservices/instructor4j/network/members"><img src="https://img.shields.io/github/forks/ows-eservices/instructor4j?cacheSeconds=120" alt="Forks Badge"/></a>
+<a href="https://github.com/ows-eservices/instructor4j/pulls"><img src="https://img.shields.io/github/issues-pr/ows-eservices/instructor4j?cacheSeconds=120" alt="Pull Requests Badge"/></a>
+<a href="https://github.com/ows-eservices/instructor4j/issues"><img src="https://img.shields.io/github/issues/ows-eservices/instructor4j?cacheSeconds=120" alt="Issues Badge"/></a>
+<a href="https://github.com/ows-eservices/instructor4j/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/ows-eservices/instructor4j?color=2b9348&cacheSeconds=120"></a>
 <a href="https://github.com/ows-eservices/instructor4j/blob/master/LICENSE"><img src="https://img.shields.io/github/license/ows-eservices/instructor4j?color=2b9348" alt="License Badge"/></a>
 
 
