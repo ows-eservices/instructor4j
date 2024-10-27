@@ -8,7 +8,7 @@
     <parent>
         <groupId>solutions.own.instructor4j</groupId>
         <artifactId>instructor4j-aggregator</artifactId>
-        <version>0.1.3</version>
+        <version>0.2.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

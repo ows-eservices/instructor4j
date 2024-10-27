@@ -44,7 +44,7 @@ public class InstructorTest {
                 new ChatMessage("user", "Nenad Alajbegovic is 30 years old")
         );
 
-        User user = instructor.createChatCompletion(messages, "gpt-3.5-turbo", User.class);
+        User user = instructor.createChatCompletion(messages, "gpt-4o-mini", User.class);
 
         assertNotNull(user);
         assertEquals(30, user.getAge());
@@ -90,7 +90,7 @@ public class InstructorTest {
                 new ChatMessage("user", "Nenad Alajbegovic is 30 years old")
         );
 
-        User user = instructor.createChatCompletion(messages, "gpt-3.5-turbo", User.class);
+        User user = instructor.createChatCompletion(messages, "gpt-4o-mini", User.class);
 
         verify(mockService, times(2)).createChatCompletion(any());
 
@@ -124,7 +124,7 @@ public class InstructorTest {
         );
 
         assertThrows(InstructorException.class, () -> {
-            instructor.createChatCompletion(messages, "gpt-3.5-turbo", User.class);
+            instructor.createChatCompletion(messages, "gpt-4o-mini", User.class);
         });
 
         verify(mockService, times(3)).createChatCompletion(any());

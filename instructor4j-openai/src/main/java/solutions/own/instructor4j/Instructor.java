@@ -75,6 +75,8 @@ public class Instructor {
                 if (retryCount == maxRetries - 1) {
                     throw new InstructorException("Maximum retries reached. Unable to validate response.", e);
                 }
+                logger.warning("Retrying with adjusted prompt.");
+                messages = adjustPrompt(messages, responseModel);
             }
 
             retryCount++;

@@ -31,7 +31,7 @@ public class IntegrationTest {
         );
 
         try {
-            User user = instructor.createChatCompletion(messages, "gpt-3.5-turbo", User.class);
+            User user = instructor.createChatCompletion(messages, "gpt-4o-mini", User.class);
 
             assertNotNull(user);
             assertEquals(25, user.getAge());
@@ -57,7 +57,7 @@ public class IntegrationTest {
         );
 
         try {
-            User user = instructor.createChatCompletion(messages, "gpt-3.5-turbo", User.class);
+            User user = instructor.createChatCompletion(messages, "gpt-4o-mini", User.class);
 
             assertNotNull(user);
             assertEquals(26, user.getAge());
