@@ -8,7 +8,7 @@
     <parent>
         <groupId>solutions.own.instructor4j</groupId>
         <artifactId>instructor4j-aggregator</artifactId>
-        <version>0.2.1</version>
+        <version>0.2.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -75,6 +75,14 @@
             <version>5.14.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Jakarta Validation -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>

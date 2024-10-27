@@ -1,24 +1,24 @@
 package solutions.own.instructor4j;
 
-import static solutions.own.instructor4j.util.Utils.getJsonType;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
-import solutions.own.instructor4j.annotation.Description;
+
+import java.util.Collections;
+
 import solutions.own.instructor4j.exception.InstructorException;
 import solutions.own.instructor4j.model.FunctionDefinition;
 import solutions.own.instructor4j.service.AiChatService;
+import solutions.own.instructor4j.util.FunctionDefinitionBuilder;
+
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatCompletionChoice;
 
 import java.lang.reflect.Field;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -96,12 +96,13 @@ public class Instructor {
      * @throws InstructorException If there is an error processing the result or mapping it to the response model.
      */
     private <T> T attemptChatCompletion(List<ChatMessage> messages, String model, Class<T> responseModel) throws InstructorException {
-        FunctionDefinition functionDefinition = getFunctionDefinition(responseModel);
+        FunctionDefinitionBuilder builder = new FunctionDefinitionBuilder();
+        FunctionDefinition functionDefinition = builder.getFunctionDefinition(responseModel);
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
             .model(model)
             .messages(messages)
-            .functions(Arrays.asList(functionDefinition))
+            .functions(Collections.singletonList(functionDefinition))
             .build();
 
         ChatCompletionResult completion = aiChatService.createChatCompletion(request);
@@ -165,41 +166,5 @@ public class Instructor {
         adjustedMessages.set(adjustedMessages.size() - 1, new ChatMessage(lastMessage.getRole(), adjustedContent));
 
         return adjustedMessages;
-    }
-
-    /**
-     * Generates a FunctionDefinition object based on the fields of the response model.
-     *
-     * @param responseModel The response model class.
-     * @param <T> The type of the response model.
-     * @return A FunctionDefinition object for the response model.
-     */
-    private <T> FunctionDefinition getFunctionDefinition(Class<T> responseModel) {
-        Map<String, Object> properties = new HashMap<>();
-
-        for (Field field : responseModel.getDeclaredFields()) {
-            Map<String, Object> fieldProps = new HashMap<>();
-            fieldProps.put("type", getJsonType(field.getType()));
-
-            if (field.isAnnotationPresent(Description.class)) {
-                Description description = field.getAnnotation(Description.class);
-                fieldProps.put("description", description.value());
-            } else {
-                fieldProps.put("description", "The " + field.getName());
-            }
-
-            properties.put(field.getName(), fieldProps);
-        }
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("type", "object");
-        parameters.put("properties", properties);
-        parameters.put("required", properties.keySet());
-
-        return FunctionDefinition.builder()
-            .name(responseModel.getSimpleName())
-            .description("Generate structured data based on the given class")
-            .parameters(parameters)
-            .build();
     }
 }

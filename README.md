@@ -35,10 +35,10 @@ You will receive a plain Java object representing a User instance with the name 
 
 ### Installation
 The latest release is
-[0.2.1](https://github.com/ows-eservices/instructor4j/releases/tag/v0.2.1).
+[0.2.2](https://github.com/ows-eservices/instructor4j/releases/tag/v0.2.2).
 
 It is available in Maven Central as
-[solutions.own.instructor4j:instructor4j:0.2.1](http://search.maven.org/#artifactdetails%7Csolutions.own.instructor4j%7Cinstructor4j-openai%7C0.2.1%7Cjar):
+[solutions.own.instructor4j:instructor4j:0.2.2](http://search.maven.org/#artifactdetails%7Csolutions.own.instructor4j%7Cinstructor4j-openai%7C0.2.2%7Cjar):
 
 Add Dependency to **pom.xml**:
 
@@ -46,13 +46,13 @@ Add Dependency to **pom.xml**:
 <dependency>
     <groupId>solutions.own.instructor4j</groupId>
     <artifactId>instructor4j-openai</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
 </dependency>
 ```
 or in **build.gradle**:
 ```groovy
 dependencies {
-  implementation 'solutions.own.instructor4j:instructor4j-openai:0.2.1'
+  implementation 'solutions.own.instructor4j:instructor4j-openai:0.2.2'
 }
 ```
 
