@@ -6,11 +6,11 @@
 
     <groupId>solutions.own.instructor4j</groupId>
     <artifactId>instructor4j-aggregator</artifactId>
-    <version>0.2.2</version>
+    <version>2.0.0</version>
     <packaging>pom</packaging>
     <name>Instructor4j :: Aggregator</name>
 
-    <url>https://github.com/ows/instructor4j</url>
+    <url>https://github.com/ows-eservices/instructor4j</url>
 
     <description>
         Instructor4j is library for working with structured outputs from large language models (LLMs).
@@ -42,12 +42,12 @@
         <developer>
             <id>OWS</id>
             <name>Nenad Alajbegovic</name>
-            <url>https://github.com/ows/instructor4j</url>
+            <url>https://github.com/ows-eservices/instructor4j</url>
         </developer>
 
     </developers>
     <scm>
-        <url>git@github.com:ows/instructor4j.git</url>
+        <url>git@github.com:ows-eservices/instructor4j.git</url>
     </scm>
 
     <modules>

@@ -22,20 +22,39 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import solutions.own.instructor4j.annotation.Description;
-import solutions.own.instructor4j.model.FunctionDefinition;
+import solutions.own.instructor4j.model.MyFunctionDefinition;
 
+/**
+ * A utility builder class responsible for generating {@link MyFunctionDefinition} instances based on
+ * provided response model classes. It supports processing of nested objects and arrays of class instances
+ * to accurately construct the corresponding JSON schema.
+ * <p>
+ * This class leverages Java Reflection to introspect the fields of the response model class, applying
+ * appropriate JSON schema types and constraints based on field annotations such as {@link NotNull},
+ * {@link Size}, {@link Min}, {@link Max}, {@link Pattern}, and {@link Email}.
+ * </p>
+ *
+ * <p><b>Example Usage:</b></p>
+ * <pre>{@code
+ * // Assuming a response model class User with appropriate annotations
+ * MyFunctionDefinition functionDef = FunctionDefinitionBuilder.getFunctionDefinition(User.class);
+ * }</pre>
+ *
+ * <p><b>Thread Safety:</b> This class is thread-safe as it does not maintain any mutable shared state.</p>
+ */
 public class FunctionDefinitionBuilder {
 
     private static final Logger logger = Logger.getLogger(FunctionDefinitionBuilder.class.getName());
 
     /**
-     * Generates a FunctionDefinition based on the provided response model class.
+     * Generates a MyFunctionDefinition based on the provided response model class.
      * Supports nested objects and arrays of class instances.
      *
      * @param responseModel The class representing the response model.
-     * @return A FunctionDefinition instance representing the JSON schema of the response model.
+     * @param <T> The type of the response model.
+     * @return A MyFunctionDefinition instance representing the JSON schema of the response model.
      */
-    public <T> FunctionDefinition getFunctionDefinition(Class<T> responseModel) {
+    public static <T> MyFunctionDefinition getFunctionDefinition(Class<T> responseModel) {
         Map<String, Object> properties = new HashMap<>();
         Set<String> requiredFields = new HashSet<>();
         Set<Class<?>> processedClasses = new HashSet<>();
@@ -47,7 +66,7 @@ public class FunctionDefinitionBuilder {
         parameters.put("properties", properties);
         parameters.put("required", new ArrayList<>(requiredFields));
 
-        return FunctionDefinition.builder()
+        return MyFunctionDefinition.builder()
             .name(responseModel.getSimpleName())
             .description("Generate structured data based on the given class")
             .parameters(parameters)
@@ -62,7 +81,7 @@ public class FunctionDefinitionBuilder {
      * @param requiredFields  The set to populate with required field names.
      * @param processedClasses A set to track processed classes and prevent infinite recursion.
      */
-    private void processClass(Class<?> clazz, Map<String, Object> properties, Set<String> requiredFields, Set<Class<?>> processedClasses) {
+    private static void processClass(Class<?> clazz, Map<String, Object> properties, Set<String> requiredFields, Set<Class<?>> processedClasses) {
         if (processedClasses.contains(clazz)) {
             logger.warning("Already processed class: " + clazz.getName() + ". Skipping to prevent recursion.");
             return;
@@ -136,7 +155,7 @@ public class FunctionDefinitionBuilder {
      * @param field The field to check.
      * @return True if the field is required; false otherwise.
      */
-    private boolean isFieldRequired(Field field) {
+    private static boolean isFieldRequired(Field field) {
         return field.isAnnotationPresent(NotNull.class) ||
             field.isAnnotationPresent(NotEmpty.class) ||
             field.isAnnotationPresent(NotBlank.class);
@@ -149,7 +168,7 @@ public class FunctionDefinitionBuilder {
      * @param field       The field being processed.
      * @param fieldType   The type of the field.
      */
-    private void addFieldConstraints(Map<String, Object> fieldSchema, Field field, Class<?> fieldType) {
+    private static void addFieldConstraints(Map<String, Object> fieldSchema, Field field, Class<?> fieldType) {
         // Handle @Min and @Max for numeric fields
         if (field.isAnnotationPresent(Min.class)) {
             Min min = field.getAnnotation(Min.class);
@@ -191,7 +210,7 @@ public class FunctionDefinitionBuilder {
      * @param type The Java class.
      * @return The corresponding JSON type as a string.
      */
-    private String getJsonType(Class<?> type) {
+    private static String getJsonType(Class<?> type) {
         if (type.equals(String.class)) {
             return "string";
         } else if (type.equals(int.class) || type.equals(Integer.class) ||
@@ -217,7 +236,7 @@ public class FunctionDefinitionBuilder {
      * @param field The field representing the collection or array.
      * @return The Class of the collection's items, or null if it cannot be determined.
      */
-    private Class<?> getCollectionItemType(Field field) {
+    private static Class<?> getCollectionItemType(Field field) {
         if (field.getType().isArray()) {
             return field.getType().getComponentType();
         } else if (Collection.class.isAssignableFrom(field.getType())) {

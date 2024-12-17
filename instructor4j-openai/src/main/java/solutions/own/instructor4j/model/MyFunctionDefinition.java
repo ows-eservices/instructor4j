@@ -6,7 +6,7 @@ import java.util.Map;
  * Represents a function definition with a name, description, and parameters.
  * This class uses the builder pattern for construction.
  */
-public class FunctionDefinition {
+public class MyFunctionDefinition {
     private String name;
     private String description;
     private Map<String, Object> parameters;
@@ -14,9 +14,9 @@ public class FunctionDefinition {
     /**
      * Private constructor to enforce the use of the {@link Builder} for creating instances.
      *
-     * @param builder The builder used to construct the FunctionDefinition instance.
+     * @param builder The builder used to construct the MyFunctionDefinition instance.
      */
-    private FunctionDefinition(Builder builder) {
+    private MyFunctionDefinition(Builder builder) {
         this.name = builder.name;
         this.description = builder.description;
         this.parameters = builder.parameters;
@@ -50,7 +50,7 @@ public class FunctionDefinition {
     }
 
     /**
-     * Creates a new instance of the {@link Builder} for constructing a {@link FunctionDefinition}.
+     * Creates a new instance of the {@link Builder} for constructing a {@link MyFunctionDefinition}.
      *
      * @return A new {@link Builder} instance.
      */
@@ -59,7 +59,7 @@ public class FunctionDefinition {
     }
 
     /**
-     * Builder class for constructing {@link FunctionDefinition} instances.
+     * Builder class for constructing {@link MyFunctionDefinition} instances.
      */
     public static class Builder {
         private String name;
@@ -100,12 +100,12 @@ public class FunctionDefinition {
         }
 
         /**
-         * Builds and returns a new {@link FunctionDefinition} instance.
+         * Builds and returns a new {@link MyFunctionDefinition} instance.
          *
-         * @return A new {@link FunctionDefinition} instance.
+         * @return A new {@link MyFunctionDefinition} instance.
          */
-        public FunctionDefinition build() {
-            return new FunctionDefinition(this);
+        public MyFunctionDefinition build() {
+            return new MyFunctionDefinition(this);
         }
     }
 }

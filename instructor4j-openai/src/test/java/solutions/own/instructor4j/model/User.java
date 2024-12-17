@@ -1,12 +1,15 @@
 package solutions.own.instructor4j.model;
 
+import javax.validation.constraints.NotNull;
 import solutions.own.instructor4j.annotation.Description;
 
 public class User {
     @Description("The age of the user on the current date")
+    @NotNull
     private int age;
 
     @Description("The name of the user")
+    @NotNull
     private String name;
 
     public User() {

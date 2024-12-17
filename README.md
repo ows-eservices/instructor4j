@@ -35,10 +35,10 @@ You will receive a plain Java object representing a User instance with the name 
 
 ### Installation
 The latest release is
-[0.2.2](https://github.com/ows-eservices/instructor4j/releases/tag/v0.2.2).
+[2.0.0](https://github.com/ows-eservices/instructor4j/releases/tag/v2.0.0).
 
 It is available in Maven Central as
-[solutions.own.instructor4j:instructor4j:0.2.2](http://search.maven.org/#artifactdetails%7Csolutions.own.instructor4j%7Cinstructor4j-openai%7C0.2.2%7Cjar):
+[solutions.own.instructor4j:instructor4j:2.0.0](http://search.maven.org/#artifactdetails%7Csolutions.own.instructor4j%7Cinstructor4j-openai%7C2.0.0%7Cjar):
 
 Add Dependency to **pom.xml**:
 
@@ -46,13 +46,13 @@ Add Dependency to **pom.xml**:
 <dependency>
     <groupId>solutions.own.instructor4j</groupId>
     <artifactId>instructor4j-openai</artifactId>
-    <version>0.2.2</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 or in **build.gradle**:
 ```groovy
 dependencies {
-  implementation 'solutions.own.instructor4j:instructor4j-openai:0.2.2'
+  implementation 'solutions.own.instructor4j:instructor4j-openai:2.0.0'
 }
 ```
 
@@ -72,13 +72,16 @@ Example:
 ```java
 package com.example.model;
 
+import jakarta.validation.constraints.NotNull;
 import solutions.own.instructor4j.annotation.Description;
 
 public class User {
     @Description("The age of the user")
+    @NotNull
     private int age;
 
     @Description("The name of the user")
+    @NotNull
     private String name;
     
     public User() {
@@ -99,11 +102,10 @@ Here's an example of how to use the Instructor class to get a structured respons
 package com.example;
 
 import solutions.own.instructor4j.exception.InstructorException;
+import solutions.own.instructor4j.model.BaseMessage;
 import solutions.own.instructor4j.service.AiChatService;
 import solutions.own.instructor4j.service.impl.OpenAiChatService;
 import solutions.own.instructor4j.Instructor;
-
-import com.theokanning.openai.completion.chat.ChatMessage;
 
 import com.example.model.User;
 
@@ -114,10 +116,10 @@ public class Main {
        String apiKey = System.getenv("OPENAI_API_KEY");
        AiChatService openAiService = new OpenAiChatService(apiKey);
        Instructor instructor = new Instructor(openAiService, 3);
-   
-       List<ChatMessage> messages = List.of(
-           new ChatMessage("user", "Nenad Alajbegovic is 30 years old")
-       );
+
+        List<BaseMessage> messages = Collections.unmodifiableList(Arrays.asList(
+            new BaseMessage(BaseMessage.Role.USER.getValue(), "Nenad Alajbegovic is 30 years old")
+        ));
    
        try {            
             User user = instructor.createChatCompletion(messages, "gpt-4o-mini", User.class);
@@ -128,6 +130,92 @@ public class Main {
     }
 }
 ```
+
+### Streaming
+Instructor4j supports partial streaming completions, allowing you to receive extracted data in real-time as the model generates its response. This can be useful for providing a more interactive user experience or processing large amounts of data incrementally.
+
+Example:
+```java
+package com.example;
+
+import solutions.own.instructor4j.exception.InstructorException;
+import solutions.own.instructor4j.model.BaseMessage;
+import solutions.own.instructor4j.service.AiChatService;
+import solutions.own.instructor4j.service.impl.OpenAiChatService;
+import solutions.own.instructor4j.Instructor;
+import solutions.own.instructor4j.util.Utils;
+
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.example.model.ConferenceParticipant;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class Main {
+    
+    private final static String meetingRecord = "In our recent online meeting, participants from various backgrounds joined to discuss the upcoming tech conference. " +
+        "The names and contact details of the participants were as follows:\n" +
+        "\n" +
+        "- Name: John Doe, Email: johndoe@email.com, Twitter: @TechGuru44\n" +
+        "- Name: Jane Smith, Email: janesmith@email.com, Twitter: @DigitalDiva88\n" +
+        "- Name: Alex Johnson, Email: alexj@email.com, Twitter: @CodeMaster2023";
+    
+    public static void main(String[] args) {
+        String apiKey = System.getenv("OPENAI_API_KEY");
+        AiChatService openAiService = new OpenAiChatService(apiKey);
+        Instructor instructor = new Instructor(openAiService, 3);
+
+        List<BaseMessage> messages = Collections.unmodifiableList(Arrays.asList(
+            new BaseMessage(BaseMessage.Role.USER.getValue(), meetingRecord)
+        ));
+
+        Flux<String> extractionStream = 
+            instructor.createStreamChatCompletion(messages, "gpt-4o-mini", ConferenceParticipant.class);
+
+        extractionStream
+            .publishOn(Schedulers.boundedElastic())
+            .doOnNext(extraction -> {
+                if (extraction != null) {
+                    // Let us assure that json received always have balanced quotes, curly braces, and square brackets
+                    String consistentJson = Utils.ensureJsonClosures(fullResponseReceived.toString());
+                    JsonNode rootNode;
+                    try {
+                        rootNode = objectMapper.readTree(consistentJson);
+                        JsonNode dataNode = rootNode.get("data");
+                        List<ConferenceParticipant> participants = objectMapper.convertValue(dataNode, new TypeReference<List<ConferenceParticipant>>() {});
+                        if (participants != null) {
+                            for (ConferenceParticipant p : participants) {
+                                System.out.println(
+                                    "    PARTIAL DATA RECEIVED: " + p.getName() + ", " + p.getEmail() + ", "
+                                        + p.getTwitter());
+                            }
+                        }
+                    } catch (JsonProcessingException e) {
+                    }
+                }
+            })
+            .doOnError(error -> {
+                System.out.println("Flux emitted an unexpected error: " + error.getMessage());
+            })
+            .doOnComplete(() -> {
+                // ...
+            })
+            .blockLast();
+    }
+}
+```
+
+The extractionStream variable holds an async generator that yields partial extraction results as they become available. We iterate over the stream updating the extraction object with each partial result and logging it to the console.
+In order to have valid JSON structure we assure that json received always have balanced quotes, curly braces, and square brackets.
+
 ## Code Examples
 Please see examples of how Instructor4j can be used in **[instructor4j-examples](https://github.com/ows-eservices/instructor4j-examples)** repo.
 
@@ -154,20 +242,12 @@ Automatic retries with adjustable maximum retry count.
 Detailed logging capabilities using Java's built-in Logger.
 Supports adding descriptions to model fields using the `@Description` annotation, which enhances the OpenAI function definitions.
 
-### Logging Configuration
-The Instructor class uses Java's built-in Logger.
-You can configure the logging level and handlers as per your application's requirements.
-
 ### Thread Safety
 The current implementation of Instructor4j is not thread-safe.
 If you plan to use it in a multi-threaded environment, consider synchronizing access to shared resources or creating separate instances per thread.
 
-### Extensibility
-Custom Validation: You can extend the validateResponse method to include custom validation logic, such as value ranges or pattern matching.
-Additional Models: You can create additional model classes with different structures and use them with the Instructor class.
-
 ## Conclusion
-The Instructor4j library provides a robust and flexible way to obtain structured outputs from OpenAI models using Java. By leveraging OpenAI Functions and dynamic schema generation, it ensures that the responses adhere to the expected structure, reducing the need for manual parsing and error handling.
+The Instructor4j library provides a robust and flexible way to obtain structured outputs from OpenAI models using Java. By leveraging OpenAI Functions and dynamic schema generation, it ensures that the responses adhere to the expected structure, reducing the need for manual parsing and error handling. Instructor4j supports partial streaming completions, allowing you to receive extracted data in real-time as the model generates its response.
 
 ## Get Help
 Please use [GitHub discussions](https://github.com/ows-eservices/instructor4j/discussions)
