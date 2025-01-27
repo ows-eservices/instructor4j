@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.openai</groupId>
             <artifactId>openai-java</artifactId>
-            <version>0.7.5</version>
+            <version>0.15.0</version>
         </dependency>
 
         <!-- Tools -->
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.11.0</version>
+            <version>5.15.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>3.7.1</version> <!-- Use the latest stable version -->
+            <version>3.7.2</version> <!-- Use the latest stable version -->
         </dependency>
 
     </dependencies>
